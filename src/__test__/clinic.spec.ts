@@ -9,6 +9,7 @@ import createServer from "../utils/server";
 import createSessionConfig from "../utils/session";
 import clientAppRoutes from "../routes/client-app";
 import clinicRoutes from "../routes/clinic";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 import { hashPassword } from "../utils";
 
@@ -69,9 +70,9 @@ afterAll(async () => {
 });
 
 describe("/register-clinic", () => {
-  test("should return 400 when no params", async () => {
+  test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).post(`/register-clinic`);
-    expect(res.status).toEqual(400);
+    expect(res.status).toEqual(UNAUTHORIZED);
   });
   test("should return 400 when client app password is incorrect", async () => {
     const res = await request(app).post(`/register-clinic`).send({
@@ -81,9 +82,9 @@ describe("/register-clinic", () => {
       postcode: "89001",
       email: "tipahtertipu@clinicmedivron.com.my",
     });
-    expect(res.status).toEqual(400);
+    expect(res.status).toEqual(UNAUTHORIZED);
   });
-  test("should return 400 when user have same email ", async () => {
+  test("should return UNAUTHORIZED when user have same email ", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: FRONTEND_PWD,
       name: "Klinik Mediveron",
@@ -91,13 +92,13 @@ describe("/register-clinic", () => {
       postcode: "89001",
       email: USER_EMAIL_1,
     });
-    expect(res.status).toEqual(400);
+    expect(res.status).toEqual(UNAUTHORIZED);
     expect(res.body.message).toEqual(
       "Could not register because email is not unique"
     );
   });
 
-  test("should return 200 when ", async () => {
+  test("should return OK when ", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: FRONTEND_PWD,
       name: "Klinik Mediveron",
@@ -106,7 +107,7 @@ describe("/register-clinic", () => {
       email: "tipahtertipu@clinicmedivron.com.my",
     });
     // console.log(res.body);
-    expect(res.status).toEqual(200);
+    expect(res.status).toEqual(OK);
     expect(res.body.message).toEqual("Successfully registered clinic");
   });
 });

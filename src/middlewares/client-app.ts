@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import { isPasswordMatch } from "../utils";
 import * as ClientAppService from "../services/client-app";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 const isAuthorize = async (req: Request) => {
   const { password } = req.body;
@@ -16,7 +17,7 @@ class Middleware {
   handleValidationError(req: Request, res: Response, next: NextFunction) {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      return res.status(400).json(error.array()[0]);
+      return res.status(UNAUTHORIZED).json(error.array()[0]);
     }
     next();
   }
@@ -27,7 +28,7 @@ class Middleware {
       req.session.destroy((err) => {
         if (err) throw err;
       });
-      return res.status(400).json({ msg: "Unauthorized" });
+      return res.status(UNAUTHORIZED).json({ msg: "Unauthorized" });
     }
     next();
   }
@@ -39,7 +40,7 @@ class Middleware {
         if (err) throw err;
       });
       // TODO : Check accountId
-      return res.status(400).json({ msg: "Unauthorized" });
+      return res.status(UNAUTHORIZED).json({ msg: "Unauthorized" });
     }
     next();
   }

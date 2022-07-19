@@ -8,6 +8,7 @@ import { config } from "dotenv";
 import createServer from "../utils/server";
 import createSessionConfig from "../utils/session";
 import clientAppRoutes from "../routes/client-app";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 import { hashPassword } from "../utils";
 
@@ -28,14 +29,7 @@ let app: Express;
 beforeAll(async () => {
   try {
     db.authenticate();
-
-    // await db.models.ClientApp.sync({ force: true });
-    const hashedPassword = await hashPassword(FRONTEND_PWD);
-    await ClientApp.create({
-      password: hashedPassword,
-      version: FRONTEND_VER,
-    });
-
+    await db.models.ClientApp.sync({ force: true });
     app = await createServer();
     // cors must be placed here before session below, else fail!
     app.use(cors(corsOptions));
@@ -53,21 +47,42 @@ afterAll(async () => {
   db.close();
 });
 
-describe("/login-client-app", () => {
-  test("should return 400 when no params", async () => {
-    const res = await request(app).post(`/login-client-app`);
-    expect(res.status).toEqual(400);
+describe("/register-client-app", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/register-client-app`);
+    expect(res.status).toEqual(UNAUTHORIZED);
   });
-  test("should return 400 if wrong password", async () => {
+  test("should return OK", async () => {
+    const res = await request(app).post(`/register-client-app`).send({
+      password: FRONTEND_PWD,
+      version: FRONTEND_VER,
+    });
+    expect(res.status).toEqual(OK);
+  });
+  test("should return FORBIDDEN", async () => {
+    const res = await request(app).post(`/register-client-app`).send({
+      password: FRONTEND_PWD,
+      version: FRONTEND_VER,
+    });
+    expect(res.status).toEqual(FORBIDDEN);
+  });
+});
+
+describe("/login-client-app", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/login-client-app`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return UNAUTHORIZED if wrong password", async () => {
     const res = await request(app).post("/login-client-app").send({
       password: "wrongpassword",
     });
-    expect(res.status).toEqual(400);
+    expect(res.status).toEqual(UNAUTHORIZED);
   });
-  test("should return 200 if credentials are met", async () => {
+  test("should return OK if credentials are met", async () => {
     const res = await request(app).post("/login-client-app").send({
       password: FRONTEND_PWD,
     });
-    expect(res.status).toEqual(200);
+    expect(res.status).toEqual(OK);
   });
 });

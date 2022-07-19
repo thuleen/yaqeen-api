@@ -23,4 +23,8 @@ const db = new Sequelize(dbName, dbUser, dbPassword, {
   logging: false,
 });
 
+if (process.env.DB_SYNC === "true" && process.env.NODE_ENV !== "test") {
+  db.sync({ force: true });
+}
+
 export default db;

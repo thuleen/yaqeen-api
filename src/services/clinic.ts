@@ -7,7 +7,7 @@ export interface RegisterClinic {
   email: string;
 }
 
-const register = async (payload: RegisterClinic) => {
+const create = async (payload: RegisterClinic) => {
   const { name, address, postcode, email } = payload;
 
   const userRecord = await User.findOne({
@@ -28,4 +28,4 @@ const register = async (payload: RegisterClinic) => {
     result: { clinicId },
   };
 };
-export { register };
+export { create };

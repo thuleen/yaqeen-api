@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import * as ClientAppService from "../services/client-app";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 class Middleware {
   handleValidationError(req: Request, res: Response, next: NextFunction) {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      return res.status(400).json(error.array()[0]);
+      return res.status(UNAUTHORIZED).json(error.array()[0]);
     }
     next();
   }
@@ -19,7 +20,7 @@ class Middleware {
       req.session.destroy((err) => {
         if (err) throw err;
       });
-      return res.status(400).json({ msg: "Unauthorized" });
+      return res.status(UNAUTHORIZED).json({ msg: "Unauthorized" });
     }
     next();
   }

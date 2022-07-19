@@ -1,0 +1,5 @@
+const OK = 200;
+const UNAUTHORIZED = 401;
+const FORBIDDEN = 403;
+
+export { OK, UNAUTHORIZED, FORBIDDEN };

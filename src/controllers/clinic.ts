@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { register } from "../services/clinic";
+import { create } from "../services/clinic";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
-const registerClinic = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response) => {
   const { name, address, postcode, email } = req.body;
-  const result = await register({ name, address, postcode, email });
+  const result = await create({ name, address, postcode, email });
   if (result.status === "Error") {
-    res.status(400).json(result);
+    res.status(UNAUTHORIZED).json(result);
     return;
   }
-  res.status(200).json(result);
+  res.status(OK).json(result);
 };
-export { registerClinic };
+export { register };
