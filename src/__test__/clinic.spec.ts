@@ -24,7 +24,7 @@ const corsOptions = {
 
 const FRONTEND_PWD = "Password123";
 const FRONTEND_VER = "0.1";
-const USER_EMAIL_1 = "tipahtertipu@gmail.com";
+const USER_EMAIL_1 = "test_duplication@email.com";
 const USER_PWD_1 = "Tipahtertipu123!";
 
 let app: Express;
@@ -70,6 +70,11 @@ afterAll(async () => {
 });
 
 describe("/register-clinic", () => {
+  const clinicName = "Klinik A";
+  const clinicAddr = "No 123, Jalan Kesihatan, Taman Surian";
+  const clinicPostcode = "89001";
+  const email = "tipahtertipu@clinicmedivron.com.my";
+
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).post(`/register-clinic`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -77,22 +82,22 @@ describe("/register-clinic", () => {
   test("should return 400 when client app password is incorrect", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: "WronngPassword",
-      name: "Klinik Mediveron",
-      address: "No 123, Jalan Kesihatan, Taman Surian",
-      postcode: "89001",
-      email: "tipahtertipu@clinicmedivron.com.my",
+      name: clinicName,
+      address: clinicAddr,
+      postcode: clinicPostcode,
+      email: email,
     });
     expect(res.status).toEqual(UNAUTHORIZED);
   });
   test("should return UNAUTHORIZED when user have same email ", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: FRONTEND_PWD,
-      name: "Klinik Mediveron",
-      address: "No 123, Jalan Kesihatan, Taman Surian",
-      postcode: "89001",
-      email: USER_EMAIL_1,
+      name: clinicName,
+      address: clinicAddr,
+      postcode: clinicPostcode,
+      email: USER_EMAIL_1, // duplicates!
     });
-    expect(res.status).toEqual(UNAUTHORIZED);
+    expect(res.status).toEqual(OK); // OK because we want frontend to consume the message
     expect(res.body.message).toEqual(
       "Could not register because email is not unique"
     );
@@ -101,13 +106,15 @@ describe("/register-clinic", () => {
   test("should return OK when ", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: FRONTEND_PWD,
-      name: "Klinik Mediveron",
-      address: "No 123, Jalan Kesihatan, Taman Surian",
-      postcode: "89001",
-      email: "tipahtertipu@clinicmedivron.com.my",
+      name: clinicName,
+      address: clinicAddr,
+      postcode: clinicPostcode,
+      email: email,
     });
-    // console.log(res.body);
+    // console.log(res.body.result);
     expect(res.status).toEqual(OK);
-    expect(res.body.message).toEqual("Successfully registered clinic");
+    expect(res.body.message).toEqual("Successfully registered a clinic");
+    expect(res.body.result.clinic.name).toEqual(clinicName);
+    expect(res.body.result.clinic.address).toEqual(clinicAddr);
   });
 });

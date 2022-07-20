@@ -3,6 +3,13 @@ import {
   ranVerificationCode,
   hashPassword,
   isPasswordMatch,
+  ranPassword,
 } from "./util";
 
-export { formatDate, ranVerificationCode, hashPassword, isPasswordMatch };
+export {
+  ranPassword,
+  formatDate,
+  ranVerificationCode,
+  hashPassword,
+  isPasswordMatch,
+};

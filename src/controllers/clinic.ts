@@ -6,7 +6,7 @@ const register = async (req: Request, res: Response) => {
   const { name, address, postcode, email } = req.body;
   const result = await create({ name, address, postcode, email });
   if (result.status === "Error") {
-    res.status(UNAUTHORIZED).json(result);
+    res.status(OK).json(result); // status OK because we want to app to consume the message
     return;
   }
   res.status(OK).json(result);

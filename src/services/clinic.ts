@@ -1,4 +1,8 @@
 import { Clinic, User } from "../models/";
+import { hashPassword, ranPassword } from "../utils";
+import { notifyUserRegDone } from "./email";
+
+const FRONTEND_CLINIC_URL = `${process.env.FRONTEND_CLINIC_URL} `;
 
 export interface RegisterClinic {
   name: string;
@@ -21,11 +25,30 @@ const create = async (payload: RegisterClinic) => {
     };
   }
 
-  let clinicId = 123;
+  const defaultPassword = ranPassword();
+  const hashedPassword = await hashPassword(defaultPassword);
+  const nuUser = await User.create({
+    name: "", // For now empty
+    email: email,
+    password: hashedPassword,
+  });
+  const nuClinic = await Clinic.create({
+    name: name, //clinic name
+    address: address,
+    postcode: postcode,
+  });
+
+  await notifyUserRegDone({
+    email: email,
+    clinicName: name,
+    defaultPassword: defaultPassword,
+    url: FRONTEND_CLINIC_URL,
+  });
+
   return {
     status: "OK",
-    message: "Successfully registered clinic",
-    result: { clinicId },
+    message: "Successfully registered a clinic",
+    result: { clinic: nuClinic },
   };
 };
 export { create };

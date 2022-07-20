@@ -12,6 +12,19 @@ const formatDate = (date: Date) => {
 };
 export { formatDate };
 
+const ranPassword = () => {
+  var chars =
+    "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var passwordLength = 8;
+  var password = "";
+  for (var i = 0; i <= passwordLength; i++) {
+    var randomNumber = Math.floor(Math.random() * chars.length);
+    password += chars.substring(randomNumber, randomNumber + 1);
+  }
+  return password;
+};
+export { ranPassword };
+
 const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(13);
   const hash = await bcrypt.hashSync(password, salt);
