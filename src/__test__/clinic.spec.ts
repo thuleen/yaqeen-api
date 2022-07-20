@@ -27,6 +27,12 @@ const FRONTEND_VER = "0.1";
 const USER_EMAIL_1 = "test_duplication@email.com";
 const USER_PWD_1 = "Tipahtertipu123!";
 
+const clinicName = "Klinik A";
+const clinicAddr = "No 123, Jalan Kesihatan, Taman Surian";
+const clinicPostcode = "89001";
+const email = "tipahtertipu@clinicmedivron.com.my";
+let usrPassword = "";
+
 let app: Express;
 
 beforeAll(async () => {
@@ -70,11 +76,6 @@ afterAll(async () => {
 });
 
 describe("/register-clinic", () => {
-  const clinicName = "Klinik A";
-  const clinicAddr = "No 123, Jalan Kesihatan, Taman Surian";
-  const clinicPostcode = "89001";
-  const email = "tipahtertipu@clinicmedivron.com.my";
-
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).post(`/register-clinic`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -113,8 +114,49 @@ describe("/register-clinic", () => {
     });
     // console.log(res.body.result);
     expect(res.status).toEqual(OK);
-    expect(res.body.message).toEqual("Successfully registered a clinic");
+    expect(res.body.message).toEqual(
+      `Successfully registered. Email is sent to ${email}`
+    );
     expect(res.body.result.clinic.name).toEqual(clinicName);
     expect(res.body.result.clinic.address).toEqual(clinicAddr);
+    usrPassword = res.body.result.usrPassword;
+  });
+});
+
+describe("/login-clinic-user", () => {
+  test("return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/login-clinic-user`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("return could not find user with dubious email", async () => {
+    const res = await request(app).post(`/login-clinic-user`).send({
+      password: FRONTEND_PWD,
+      email: "dubious@email.com",
+      usrPassword: usrPassword,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Could not find user with the email");
+  });
+  test("return incorrect password", async () => {
+    const res = await request(app).post(`/login-clinic-user`).send({
+      password: FRONTEND_PWD,
+      email: email,
+      usrPassword: "wronguserpassword",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Incorrect password");
+  });
+  test("return OK", async () => {
+    const res = await request(app).post(`/login-clinic-user`).send({
+      password: FRONTEND_PWD,
+      email: email,
+      usrPassword: usrPassword,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Successfully logged in");
+    expect(res.body.result.clinic.id).toBeGreaterThan(0);
+    expect(res.body.result.clinic.name).toEqual(clinicName);
+    expect(res.body.result.clinic.address).toEqual(clinicAddr);
+    expect(res.body.result.clinic.postcode).toEqual(clinicPostcode);
   });
 });

@@ -8,8 +8,10 @@ import {
   DataTypes,
   Model,
   NonAttribute,
+  ForeignKey,
 } from "sequelize";
 import db from "../db/config";
+import Clinic from "./clinic";
 
 class User extends Model {
   declare id: CreationOptional<number>;
@@ -17,6 +19,7 @@ class User extends Model {
   declare email: CreationOptional<string>;
   declare password: CreationOptional<string>;
 
+  declare ClinicId: ForeignKey<Clinic["id"]>;
   // createdAt can be undefined during creation
   declare createdAt: CreationOptional<Date>;
   // updatedAt can be undefined during creation

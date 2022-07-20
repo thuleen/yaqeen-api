@@ -26,12 +26,8 @@ class ClinicValidator {
             (0, express_validator_1.body)("password")
                 .notEmpty()
                 .withMessage("client app password should not be empty"),
-            (0, express_validator_1.body)("email")
-                .notEmpty()
-                .withMessage("user email should not be empty"),
-            (0, express_validator_1.body)("usrPassword")
-                .notEmpty()
-                .withMessage("c should not be empty"),
+            (0, express_validator_1.body)("email").notEmpty().withMessage("user email should not be empty"),
+            (0, express_validator_1.body)("usrPassword").notEmpty().withMessage("c should not be empty"),
         ];
     }
 }

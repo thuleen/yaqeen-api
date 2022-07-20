@@ -25,24 +25,36 @@ const create = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             message: "Could not register because email is not unique",
         };
     }
-    const defaultPassword = (0, utils_1.ranPassword)();
-    const hashedPassword = yield (0, utils_1.hashPassword)(defaultPassword);
-    const nuUser = yield models_1.User.create({
-        name: "",
-        email: email,
-        password: hashedPassword,
-    });
     const nuClinic = yield models_1.Clinic.create({
         name: name,
         address: address,
         postcode: postcode,
     });
+    const defaultPassword = (0, utils_1.ranPassword)();
+    const hashedPassword = yield (0, utils_1.hashPassword)(defaultPassword);
+    // const nuUser = await User.create({
+    //   name: "", // For now empty
+    //   email: email,
+    //   password: hashedPassword,
+    //   ClinicId: nuClinic.id,,,
+    // });
+    let nuUser = yield nuClinic.createUser();
+    nuUser.password = hashedPassword;
+    nuUser.email = email;
+    yield nuUser.save();
     yield (0, email_1.notifyUserRegDone)({
         email: email,
         clinicName: name,
         defaultPassword: defaultPassword,
         url: FRONTEND_CLINIC_URL,
     });
+    if (process.env.NODE_ENV === "test") {
+        return {
+            status: "OK",
+            message: `Successfully registered. Email is sent to ${email}`,
+            result: { clinic: nuClinic, usrPassword: defaultPassword },
+        };
+    }
     return {
         status: "OK",
         message: `Successfully registered. Email is sent to ${email}`,
@@ -52,9 +64,31 @@ const create = (payload) => __awaiter(void 0, void 0, void 0, function* () {
 exports.create = create;
 const loginUsr = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payload;
+    const user = yield models_1.User.findOne({
+        where: {
+            email: email,
+        },
+    });
+    if (!user) {
+        return {
+            status: "Error",
+            message: `Could not find user with the email`,
+        };
+    }
+    const hashedPassword = user.password;
+    if (!(0, utils_1.isPasswordMatch)(password, hashedPassword)) {
+        return {
+            status: "Error",
+            message: `Incorrect password`,
+        };
+    }
+    const clinic = yield models_1.Clinic.findOne({
+        where: { id: user.ClinicId },
+    });
     return {
         status: "OK",
         message: `Successfully logged in`,
+        result: { clinic },
     };
 });
 exports.loginUsr = loginUsr;

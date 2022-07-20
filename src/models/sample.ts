@@ -8,8 +8,10 @@ import {
   DataTypes,
   Model,
   NonAttribute,
+  ForeignKey,
 } from "sequelize";
 import db from "../db/config";
+import Clinic from "./clinic";
 
 class Sample extends Model {
   declare id: CreationOptional<number>;
@@ -24,6 +26,7 @@ class Sample extends Model {
   declare interpretAt: CreationOptional<Date>;
   declare photoTakenAt: CreationOptional<Date>;
 
+  declare ClinicId: ForeignKey<Clinic["id"]>;
   // createdAt can be undefined during creation
   declare createdAt: CreationOptional<Date>;
   // updatedAt can be undefined during creation

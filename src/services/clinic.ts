@@ -1,5 +1,5 @@
 import { Clinic, User } from "../models/";
-import { hashPassword, ranPassword } from "../utils";
+import { hashPassword, ranPassword, isPasswordMatch } from "../utils";
 import { notifyUserRegDone } from "./email";
 
 const FRONTEND_CLINIC_URL = `${process.env.FRONTEND_CLINIC_URL} `;
@@ -30,18 +30,23 @@ const create = async (payload: Register) => {
     };
   }
 
-  const defaultPassword = ranPassword();
-  const hashedPassword = await hashPassword(defaultPassword);
-  const nuUser = await User.create({
-    name: "", // For now empty
-    email: email,
-    password: hashedPassword,
-  });
   const nuClinic = await Clinic.create({
     name: name, //clinic name
     address: address,
     postcode: postcode,
   });
+  const defaultPassword = ranPassword();
+  const hashedPassword = await hashPassword(defaultPassword);
+  // const nuUser = await User.create({
+  //   name: "", // For now empty
+  //   email: email,
+  //   password: hashedPassword,
+  //   ClinicId: nuClinic.id,,,
+  // });
+  let nuUser = await nuClinic.createUser();
+  nuUser.password = hashedPassword;
+  nuUser.email = email;
+  await nuUser.save();
 
   await notifyUserRegDone({
     email: email,
@@ -50,6 +55,13 @@ const create = async (payload: Register) => {
     url: FRONTEND_CLINIC_URL,
   });
 
+  if (process.env.NODE_ENV === "test") {
+    return {
+      status: "OK",
+      message: `Successfully registered. Email is sent to ${email}`,
+      result: { clinic: nuClinic, usrPassword: defaultPassword },
+    };
+  }
   return {
     status: "OK",
     message: `Successfully registered. Email is sent to ${email}`,
@@ -60,9 +72,36 @@ export { create };
 
 const loginUsr = async (payload: Login) => {
   const { email, password } = payload;
+
+  const user = await User.findOne({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user) {
+    return {
+      status: "Error",
+      message: `Could not find user with the email`,
+    };
+  }
+
+  const hashedPassword = user.password;
+  if (!isPasswordMatch(password, hashedPassword)) {
+    return {
+      status: "Error",
+      message: `Incorrect password`,
+    };
+  }
+
+  const clinic = await Clinic.findOne({
+    where: { id: user.ClinicId },
+  });
+
   return {
     status: "OK",
     message: `Successfully logged in`,
+    result: { clinic },
   };
 };
 export { loginUsr };
