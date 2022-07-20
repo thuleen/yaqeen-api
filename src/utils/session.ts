@@ -17,7 +17,9 @@ export default function createSession({ db }: CreateSessionType) {
     tableName: "sessions",
   });
 
-  if (!isForProduction) sessionStore.sync();
+  if (!isForProduction || process.env.DB_SYNC === "true")
+    sessionStore.sync({ force: true });
+
   const sess = {
     secret: `${SESSION_SECRET}`,
     resave: true,

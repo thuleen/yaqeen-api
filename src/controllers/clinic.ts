@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { create } from "../services/clinic";
+import { create, loginUsr } from "../services/clinic";
 import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 const register = async (req: Request, res: Response) => {
@@ -12,3 +12,14 @@ const register = async (req: Request, res: Response) => {
   res.status(OK).json(result);
 };
 export { register };
+
+const login = async (req: Request, res: Response) => {
+  const { email, usrPassword } = req.body;
+  const result = await loginUsr({ email: email, password: usrPassword });
+  if (result.status === "Error") {
+    res.status(OK).json(result); // status OK because we want to app to consume the message
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { login };

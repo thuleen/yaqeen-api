@@ -1,5 +1,5 @@
 import express from "express";
-import { register } from "../controllers/clinic";
+import { register, login } from "../controllers/clinic";
 import { default as Validator } from "../validators/clinic";
 import { default as Middleware } from "../middlewares/clinic";
 
@@ -11,6 +11,14 @@ router.post(
   Middleware.handleValidationError,
   Middleware.isAuthorize,
   register
+);
+
+router.post(
+  "/login-clinic-user",
+  Validator.validateForLogin(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  login
 );
 
 export default router;

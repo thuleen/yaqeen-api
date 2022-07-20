@@ -4,14 +4,19 @@ import { notifyUserRegDone } from "./email";
 
 const FRONTEND_CLINIC_URL = `${process.env.FRONTEND_CLINIC_URL} `;
 
-export interface RegisterClinic {
+export interface Register {
   name: string;
   address: string;
   postcode: string;
   email: string;
 }
 
-const create = async (payload: RegisterClinic) => {
+export interface Login {
+  email: string;
+  password: string;
+}
+
+const create = async (payload: Register) => {
   const { name, address, postcode, email } = payload;
 
   const userRecord = await User.findOne({
@@ -47,8 +52,17 @@ const create = async (payload: RegisterClinic) => {
 
   return {
     status: "OK",
-    message: "Successfully registered a clinic",
+    message: `Successfully registered. Email is sent to ${email}`,
     result: { clinic: nuClinic },
   };
 };
 export { create };
+
+const loginUsr = async (payload: Login) => {
+  const { email, password } = payload;
+  return {
+    status: "OK",
+    message: `Successfully logged in`,
+  };
+};
+export { loginUsr };

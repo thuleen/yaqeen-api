@@ -4,4 +4,4 @@ import { Request, Response } from "express";
 const create = async (req: Request, res: Response) => {
   res.status(200).json({ message: "Logged in" });
 };
-export { loginApp };
+export { create };
