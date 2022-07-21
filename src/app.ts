@@ -1,8 +1,11 @@
 import cors from "cors";
 import db from "./db/config";
 import { config } from "dotenv";
+
 import clientAppRoutes from "./routes/client-app";
 import clinicRoutes from "./routes/clinic";
+import sampleRoutes from "./routes/sample";
+
 import createServer from "./utils/server";
 import createSessionConfig from "./utils/session";
 config();
@@ -30,6 +33,7 @@ try {
   // routes - must be placed after configuring session!
   app.use("/", clientAppRoutes);
   app.use("/", clinicRoutes);
+  app.use("/", sampleRoutes);
 
   app.listen(PORT, () => {
     console.log("Server is running    : " + PORT);

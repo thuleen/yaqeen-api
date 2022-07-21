@@ -109,6 +109,13 @@ describe("/create-sample", () => {
       socialId: patientSocId,
     });
     expect(res.status).toEqual(OK);
-    expect(res.body.result.sample.tagNo).toEqual(tagNo)
+    expect(res.body.result.sample.tagNo).toEqual(tagNo);
+  });
+});
+
+describe("/update-sample-photo", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/create-sample`);
+    expect(res.status).toEqual(UNAUTHORIZED);
   });
 });

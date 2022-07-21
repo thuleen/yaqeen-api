@@ -34,10 +34,6 @@ const create = async (payload: CreateSample) => {
     pSocId: socialId,
   });
 
-  // return {
-  //   status: "Error",
-  //   message: "Could not logged in because wrong password",
-  // };
   return {
     status: "OK",
     message: "Successfully created sample",

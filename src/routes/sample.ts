@@ -13,4 +13,12 @@ router.post(
   createSample
 );
 
+router.put(
+  "/update-sample-photo",
+  Validator.validateForUpdating(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  updatePhoto
+);
+
 export default router;
