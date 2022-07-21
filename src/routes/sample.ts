@@ -1,16 +1,16 @@
 import express from "express";
-import { create } from "../controllers/sample";
-// import { default as Validator } from "../validators/sample";
-// import { default as Middleware } from "../middlewares/sample";
+import { createSample } from "../controllers/sample";
+import Validator from "../validators/sample";
+import Middleware from "../middlewares/sample";
 
 const router = express.Router();
 
 router.post(
   "/create-sample",
-  // Validator.validate(),
-  // Middleware.handleValidationError,
-  // Middleware.isAuthorizeForLogin,
-  create
+  Validator.validateForCreation(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  createSample
 );
 
 export default router;

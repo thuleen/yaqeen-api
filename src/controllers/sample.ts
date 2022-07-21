@@ -1,7 +1,14 @@
 import { Request, Response } from "express";
-// import * as ClientAppService from "../services/client-app";
+import { create } from "../services/sample";
+import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
-const create = async (req: Request, res: Response) => {
-  res.status(200).json({ message: "Logged in" });
+// create a sample
+const createSample = async (req: Request, res: Response) => {
+  const result = await create({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result);
+    return;
+  }
+  res.status(OK).json(result);
 };
-export { create };
+export { createSample };
