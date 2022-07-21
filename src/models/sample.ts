@@ -21,7 +21,7 @@ class Sample extends Model {
   declare pMobileNo: CreationOptional<string>;
   declare pIdType: CreationOptional<string>;
   declare pSocId: CreationOptional<string>;
-  declare samplePhotoDataUri: CreationOptional<Buffer>;
+  declare photoUri: CreationOptional<Buffer>;
   declare pending: CreationOptional<boolean>;
   declare lastActiveStep: CreationOptional<number>;
   declare interpretAt: CreationOptional<Date>;
@@ -65,7 +65,7 @@ Sample.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    samplePhotoDataUri: {
+    photoUri: {
       type: DataTypes.BLOB("long"),
       allowNull: true,
     },

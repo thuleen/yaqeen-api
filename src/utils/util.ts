@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import bcrypt from "bcrypt";
 
 // generate random 7 digits
@@ -11,6 +11,11 @@ const formatDate = (date: Date) => {
   return format(date, "yyyy-MM-dd HH-mm-ss");
 };
 export { formatDate };
+
+const parseStrToDate = (date: string) => {
+    return parseISO(date)
+};
+export { parseStrToDate };
 
 const ranPassword = () => {
   var chars =

@@ -1,5 +1,6 @@
 import {
   formatDate,
+  parseStrToDate,
   ranVerificationCode,
   hashPassword,
   isPasswordMatch,
@@ -9,6 +10,7 @@ import {
 export {
   ranPassword,
   formatDate,
+  parseStrToDate,
   ranVerificationCode,
   hashPassword,
   isPasswordMatch,

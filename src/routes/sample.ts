@@ -1,5 +1,5 @@
 import express from "express";
-import { createSample } from "../controllers/sample";
+import { createSample, updateSamplePhoto } from "../controllers/sample";
 import Validator from "../validators/sample";
 import Middleware from "../middlewares/sample";
 
@@ -18,7 +18,7 @@ router.put(
   Validator.validateForUpdating(),
   Middleware.handleValidationError,
   Middleware.isAuthorize,
-  updatePhoto
+  updateSamplePhoto
 );
 
 export default router;

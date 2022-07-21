@@ -9,6 +9,7 @@ import createServer from "../utils/server";
 import createSessionConfig from "../utils/session";
 import sampleRoutes from "../routes/sample";
 import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
+import samplePhoto from "./photo";
 
 import { hashPassword } from "../utils";
 
@@ -33,6 +34,7 @@ const clinicPostcode = "89001";
 const email = "tipahtertipu@clinicmedivron.com.my";
 let usrPassword = "";
 
+let sampleId: number;
 const tagNo = "123";
 const testType = "Dengue/NS1Ag";
 const patientName = "Najibozo Setan Bengap";
@@ -108,6 +110,7 @@ describe("/create-sample", () => {
       idType: patienIdType,
       socialId: patientSocId,
     });
+    sampleId = res.body.result.sample.id;
     expect(res.status).toEqual(OK);
     expect(res.body.result.sample.tagNo).toEqual(tagNo);
   });
@@ -115,7 +118,40 @@ describe("/create-sample", () => {
 
 describe("/update-sample-photo", () => {
   test("should return UNAUTHORIZED when no params", async () => {
-    const res = await request(app).post(`/create-sample`);
+    const res = await request(app).put(`/update-sample-photo`);
     expect(res.status).toEqual(UNAUTHORIZED);
   });
+  test("should return OK but could not fiind a sample record", async () => {
+    const res = await request(app).put(`/update-sample-photo`).send({
+      password: FRONTEND_PWD,
+      id: 0, // <<-- non existent sample record id
+      clinicId: clinicId,
+      tagNo: tagNo,
+      testType: testType,
+      name: patientName,
+      mobileNo: patientMobileNo,
+      idType: patienIdType,
+      socialId: patientSocId,
+      photoUri: "todo",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Could not find the sample record");
+  });
+  // test("should return OK", async () => {
+  //   const res = await request(app)
+  //     .put(`/update-sample-photo`)
+  //     .send({
+  //       password: FRONTEND_PWD,
+  //       id: sampleId,
+  //       clinicId: clinicId,
+  //       tagNo: tagNo,
+  //       testType: testType,
+  //       name: "Updated " + patientName,
+  //       mobileNo: "112" + patientMobileNo,
+  //       idType: patienIdType === "Nric" ? "Passport" : "Nric",
+  //       socialId: "007" + patientSocId,
+  //       photoUri: samplePhoto,
+  //     });
+  //   expect(res.status).toEqual(OK);
+  // });
 });
