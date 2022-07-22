@@ -6,6 +6,9 @@ class Validator {
       body("password")
         .notEmpty()
         .withMessage("client app password should not be empty"),
+      body("lastActiveStep")
+        .notEmpty()
+        .withMessage("lastActiveStep should not be empty"),
       body("clinicId").notEmpty().withMessage("clinicId should not be empty"),
       body("tagNo")
         .notEmpty()
@@ -31,6 +34,9 @@ class Validator {
       body("password")
         .notEmpty()
         .withMessage("client app password should not be empty"),
+      body("lastActiveStep")
+        .notEmpty()
+        .withMessage("lastActiveStep should not be empty"),
       body("id").notEmpty().withMessage("sample id should not be empty"),
       body("clinicId").notEmpty().withMessage("clinicId should not be empty"),
       body("tagNo")
@@ -50,7 +56,9 @@ class Validator {
         .notEmpty()
         .withMessage("patient socialId should not be empty"),
       body("photoUri").notEmpty().withMessage("photoUri should not be empty"),
-      body("photoTakenAt").notEmpty().withMessage("photoUri should not be empty"),
+      body("photoTakenAt")
+        .notEmpty()
+        .withMessage("photoUri should not be empty"),
     ];
   }
 }

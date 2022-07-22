@@ -95,6 +95,7 @@ afterAll(async () => {
 });
 
 describe("/create-sample", () => {
+  const CREATE_SAMPLE_STEP = 1;
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).post(`/create-sample`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -102,6 +103,7 @@ describe("/create-sample", () => {
   test("should return OK", async () => {
     const res = await request(app).post(`/create-sample`).send({
       password: FRONTEND_PWD,
+      lastActiveStep: CREATE_SAMPLE_STEP,
       clinicId: clinicId,
       tagNo: tagNo,
       testType: testType,
@@ -113,10 +115,12 @@ describe("/create-sample", () => {
     sampleId = res.body.result.sample.id;
     expect(res.status).toEqual(OK);
     expect(res.body.result.sample.tagNo).toEqual(tagNo);
+    expect(res.body.result.sample.lastActiveStep).toEqual(CREATE_SAMPLE_STEP);
   });
 });
 
 describe("/update-sample-photo", () => {
+  const SAVE_PHOTO_STEP = 2;
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).put(`/update-sample-photo`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -125,6 +129,7 @@ describe("/update-sample-photo", () => {
     const res = await request(app).put(`/update-sample-photo`).send({
       password: FRONTEND_PWD,
       id: 0, // <<-- non existent sample record id
+      lastActiveStep: SAVE_PHOTO_STEP,
       clinicId: clinicId,
       tagNo: tagNo,
       testType: testType,
@@ -132,26 +137,30 @@ describe("/update-sample-photo", () => {
       mobileNo: patientMobileNo,
       idType: patienIdType,
       socialId: patientSocId,
-      photoUri: "todo",
+      photoUri: samplePhoto,
+      photoTakenAt: "2022-07-22 08:07:47",
     });
     expect(res.status).toEqual(OK);
     expect(res.body.message).toEqual("Could not find the sample record");
+    expect(res.body.result).toBeUndefined();
   });
-  // test("should return OK", async () => {
-  //   const res = await request(app)
-  //     .put(`/update-sample-photo`)
-  //     .send({
-  //       password: FRONTEND_PWD,
-  //       id: sampleId,
-  //       clinicId: clinicId,
-  //       tagNo: tagNo,
-  //       testType: testType,
-  //       name: "Updated " + patientName,
-  //       mobileNo: "112" + patientMobileNo,
-  //       idType: patienIdType === "Nric" ? "Passport" : "Nric",
-  //       socialId: "007" + patientSocId,
-  //       photoUri: samplePhoto,
-  //     });
-  //   expect(res.status).toEqual(OK);
-  // });
+  test("should return OK", async () => {
+    const res = await request(app).put(`/update-sample-photo`).send({
+      password: FRONTEND_PWD,
+      id: sampleId,
+      lastActiveStep: SAVE_PHOTO_STEP,
+      clinicId: clinicId,
+      tagNo: tagNo,
+      testType: testType,
+      name: patientName,
+      mobileNo: patientMobileNo,
+      idType: patienIdType,
+      socialId: patientSocId,
+      photoUri: samplePhoto,
+      photoTakenAt: "2022-07-22 08:07:47",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Successfully update sample photo");
+    expect(res.body.result.sample.lastActiveStep).toEqual(SAVE_PHOTO_STEP);
+  });
 });

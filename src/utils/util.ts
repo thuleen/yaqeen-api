@@ -13,7 +13,7 @@ const formatDate = (date: Date) => {
 export { formatDate };
 
 const parseStrToDate = (date: string) => {
-    return parseISO(date)
+  return parseISO(date);
 };
 export { parseStrToDate };
 

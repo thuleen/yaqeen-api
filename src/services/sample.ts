@@ -1,7 +1,8 @@
 import { Clinic, Sample } from "../models/";
-import { parseStrToDate } from "../utils"
+import { parseStrToDate } from "../utils";
 
 export interface CreateSample {
+  lastActiveStep: number;
   clinicId: number;
   tagNo: string;
   testType: string;
@@ -18,8 +19,16 @@ export interface UpdateSamplePhoto extends CreateSample {
 }
 
 const create = async (payload: CreateSample) => {
-  const { clinicId, tagNo, testType, name, mobileNo, idType, socialId } =
-    payload;
+  const {
+    lastActiveStep,
+    clinicId,
+    tagNo,
+    testType,
+    name,
+    mobileNo,
+    idType,
+    socialId,
+  } = payload;
 
   const clinic = await Clinic.findOne({
     where: { id: clinicId },
@@ -33,6 +42,7 @@ const create = async (payload: CreateSample) => {
   }
 
   let sample = await clinic.createSample({
+    lastActiveStep: lastActiveStep,
     tagNo: tagNo,
     testType: testType,
     pName: name, // patient name
@@ -44,7 +54,19 @@ const create = async (payload: CreateSample) => {
   return {
     status: "OK",
     message: "Successfully created sample",
-    result: { sample },
+    result: {
+      sample: {
+        id: sample.id,
+        lastActiveStep: sample.lastActiveStep,
+        clinicId: sample.ClinicId,
+        tagNo: sample.tagNo,
+        testType: sample.testType,
+        name: sample.pName,
+        mobileNo: sample.pMobileNo,
+        idType: sample.pIdType,
+        socialId: sample.pSocId,
+      },
+    },
   };
 };
 export { create };
@@ -52,6 +74,7 @@ export { create };
 const updatePhoto = async (payload: UpdateSamplePhoto) => {
   const {
     id,
+    lastActiveStep,
     clinicId,
     tagNo,
     testType,
@@ -75,7 +98,7 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
       message: "Could not find the sample record",
     };
   }
-  //only update 5 properties...
+  sample.lastActiveStep = lastActiveStep;
   sample.pName = name;
   sample.pMobileNo = mobileNo;
   sample.pIdType = idType;
@@ -90,7 +113,9 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
     result: {
       sample: {
         photoUri: photoUri,
+        photoTakenAt: photoTakenAt,
         id: sample.id,
+        lastActiveStep: sample.lastActiveStep,
         clinicId: sample.ClinicId,
         tagNo: sample.tagNo,
         testType: sample.testType,
@@ -98,7 +123,6 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
         mobileNo: sample.pMobileNo,
         idType: sample.pIdType,
         socialId: sample.pSocId,
-        photoTakenAt: photoTakenAt,
       },
     },
   };
