@@ -16,7 +16,7 @@ export interface Login {
   password: string;
 }
 
-const create = async (payload: Register) => {
+const register = async (payload: Register) => {
   const { name, address, postcode, email } = payload;
 
   const userRecord = await User.findOne({
@@ -71,9 +71,9 @@ const create = async (payload: Register) => {
     result: { clinic: nuClinic, userId: nuUser.id },
   };
 };
-export { create };
+export { register };
 
-const loginUsr = async (payload: Login) => {
+const login = async (payload: Login) => {
   const { email, password } = payload;
 
   const user = await User.findOne({
@@ -107,4 +107,4 @@ const loginUsr = async (payload: Login) => {
     result: { clinic },
   };
 };
-export { loginUsr };
+export { login };

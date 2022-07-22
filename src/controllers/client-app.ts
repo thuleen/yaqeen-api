@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
-import { create } from "../services/client-app";
+import * as service from "../services/client-app";
 
 declare module "express-session" {
   interface Session {
@@ -10,7 +10,7 @@ declare module "express-session" {
 
 const register = async (req: Request, res: Response) => {
   const { password, version } = req.body;
-  const r = await create({ password, version });
+  const r = await service.register({ password, version });
   if (r.status === "Error") {
     res.status(FORBIDDEN).json(r);
     return;

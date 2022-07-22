@@ -43,6 +43,8 @@ const patienIdType = "Nric";
 const patientSocId = "512332235894574";
 
 let app: Express;
+let clinic;
+Clinic;
 
 beforeAll(async () => {
   try {
@@ -61,11 +63,6 @@ beforeAll(async () => {
       version: FRONTEND_VER,
     });
 
-    hashedPassword = await hashPassword(USER_PWD_1);
-    // await User.create({
-    //   email: USER_EMAIL_1,
-    //   password: hashedPassword,
-    // });
     const clinic = await Clinic.create({
       name: clinicName,
       address: clinicAddr,
@@ -74,6 +71,7 @@ beforeAll(async () => {
     clinicId = clinic.id;
     let user = await clinic.createUser();
     user.email = USER_EMAIL_1;
+    hashedPassword = await hashPassword(USER_PWD_1);
     user.password = hashedPassword;
     await user.save();
 

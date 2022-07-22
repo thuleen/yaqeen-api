@@ -15,7 +15,7 @@ interface CreateClientApp {
 }
 
 // call to register an app
-const create = async (payload: CreateClientApp) => {
+const register = async (payload: CreateClientApp) => {
   const { password, version } = payload;
   const client = await ClientApp.findOne({ where: { id: 1 } });
   if (client) {
@@ -38,7 +38,7 @@ const create = async (payload: CreateClientApp) => {
     result: newapp,
   };
 };
-export { create };
+export { register };
 
 const login = async (password: string) => {
   const client = await ClientApp.findOne({

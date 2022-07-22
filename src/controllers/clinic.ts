@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { create, loginUsr } from "../services/clinic";
+import * as service from "../services/clinic";
 import { OK, UNAUTHORIZED, FORBIDDEN } from "../http-status-code";
 
 const register = async (req: Request, res: Response) => {
   const { name, address, postcode, email } = req.body;
-  const result = await create({ name, address, postcode, email });
+  const result = await service.register({ name, address, postcode, email });
   if (result.status === "Error") {
     res.status(OK).json(result); // status OK because we want to app to consume the message
     return;
@@ -15,7 +15,7 @@ export { register };
 
 const login = async (req: Request, res: Response) => {
   const { email, usrPassword } = req.body;
-  const result = await loginUsr({ email: email, password: usrPassword });
+  const result = await service.login({ email: email, password: usrPassword });
   if (result.status === "Error") {
     res.status(OK).json(result); // status OK because we want to app to consume the message
     return;
