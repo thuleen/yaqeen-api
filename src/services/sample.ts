@@ -16,6 +16,14 @@ export interface CreateSample {
   socialId: string;
 }
 
+export interface UpdateSamplePatient extends CreateSample {
+  id: number; // record id generated in the sample table
+  name: string;
+  mobileNo: string;
+  idType: string;
+  socialId: string;
+}
+
 export interface UpdateSamplePhoto extends CreateSample {
   id: number; // record id generated in the sample table
   photoUri: string;
@@ -23,16 +31,7 @@ export interface UpdateSamplePhoto extends CreateSample {
 }
 
 const create = async (payload: CreateSample) => {
-  const {
-    lastActiveStep,
-    clinicId,
-    tagNo,
-    testType,
-    name,
-    mobileNo,
-    idType,
-    socialId,
-  } = payload;
+  const { lastActiveStep, clinicId, tagNo, testType } = payload;
 
   const clinic = await Clinic.findOne({
     where: { id: clinicId },
@@ -49,10 +48,6 @@ const create = async (payload: CreateSample) => {
     lastActiveStep: lastActiveStep,
     tagNo: tagNo,
     testType: testType,
-    name: name, // patient name
-    mobileNo: mobileNo,
-    idType: idType,
-    socialId: socialId,
   });
   // to remove sequelize decorators...
   sample = sample.get({ plain: true });
@@ -64,6 +59,39 @@ const create = async (payload: CreateSample) => {
   };
 };
 export { create };
+
+const updatePatient = async (payload: UpdateSamplePatient) => {
+  const { id, lastActiveStep, clinicId, name, mobileNo, idType, socialId } =
+    payload;
+
+  let sample = await Sample.findOne({
+    where: {
+      id: id,
+      ClinicId: clinicId,
+    },
+  });
+  if (!sample) {
+    return {
+      status: "Error",
+      message: "Could not find the sample record",
+    };
+  }
+  sample.lastActiveStep = lastActiveStep;
+  sample.name = name;
+  sample.mobileNo = mobileNo;
+  sample.idType = idType;
+  sample.socialId = socialId;
+  await sample.save();
+  // to remove sequelize decorators...
+  sample = sample.get({ plain: true });
+
+  return {
+    status: "OK",
+    message: "Successfully update sample patient",
+    result: { sample: { ...sample } },
+  };
+};
+export { updatePatient };
 
 const updatePhoto = async (payload: UpdateSamplePhoto) => {
   const {

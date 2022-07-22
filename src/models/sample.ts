@@ -51,19 +51,19 @@ Sample.init(
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     mobileNo: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     idType: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     socialId: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     photoUri: {
       type: DataTypes.BLOB("long"),

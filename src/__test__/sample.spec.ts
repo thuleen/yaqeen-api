@@ -93,7 +93,7 @@ afterAll(async () => {
 });
 
 describe("/create-sample", () => {
-  const CREATE_SAMPLE_STEP = 1;
+  const CREATE_SAMPLE_STEP = 0;
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).post(`/create-sample`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -105,15 +105,34 @@ describe("/create-sample", () => {
       clinicId: clinicId,
       tagNo: tagNo,
       testType: testType,
-      name: patientName,
-      mobileNo: patientMobileNo,
-      idType: patienIdType,
-      socialId: patientSocId,
     });
     sampleId = res.body.result.sample.id;
     expect(res.status).toEqual(OK);
     expect(res.body.result.sample.tagNo).toEqual(tagNo);
     expect(res.body.result.sample.lastActiveStep).toEqual(CREATE_SAMPLE_STEP);
+  });
+});
+
+describe("/update-patient", () => {
+  const UPDATE_SAMPLE_STEP = 1;
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).put(`/update-patient`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return OK", async () => {
+    const res = await request(app).put(`/update-patient`).send({
+      password: FRONTEND_PWD,
+      id: sampleId,
+      lastActiveStep: UPDATE_SAMPLE_STEP,
+      clinicId: clinicId,
+      name: patientName,
+      mobileNo: patientMobileNo,
+      idType: patienIdType,
+      socialId: patientSocId,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.sample.name).toEqual(patientName);
+    expect(res.body.result.sample.lastActiveStep).toEqual(UPDATE_SAMPLE_STEP);
   });
 });
 

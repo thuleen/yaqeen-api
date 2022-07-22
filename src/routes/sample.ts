@@ -14,8 +14,16 @@ router.post(
 );
 
 router.put(
+  "/update-patient",
+  Validator.validateForUpdatingPatient(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.updatePatient
+);
+
+router.put(
   "/update-sample-photo",
-  Validator.validateForUpdating(),
+  Validator.validateForUpdatingPhoto(),
   Middleware.handleValidationError,
   Middleware.isAuthorize,
   Controller.updatePhoto
