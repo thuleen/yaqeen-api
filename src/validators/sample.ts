@@ -1,6 +1,14 @@
 import { body, param, query } from "express-validator";
 
 class Validator {
+  validateForGetSamples() {
+    return [
+      body("password")
+        .notEmpty()
+        .withMessage("client app password should not be empty"),
+      body("clinicId").notEmpty().withMessage("clinicId should not be empty"),
+    ];
+  }
   validateForCreation() {
     return [
       body("password")

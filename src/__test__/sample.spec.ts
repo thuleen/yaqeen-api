@@ -164,3 +164,26 @@ describe("/update-sample-photo", () => {
     expect(res.body.result.sample.lastActiveStep).toEqual(SAVE_PHOTO_STEP);
   });
 });
+
+describe("/samples", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/samples`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return OK but wrong clinicId so no sample", async () => {
+    const res = await request(app).post(`/samples`).send({
+      password: FRONTEND_PWD,
+      clinicId: 999,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.samples.length).toEqual(0);
+  });
+  test("should return OK and samples", async () => {
+    const res = await request(app).post(`/samples`).send({
+      password: FRONTEND_PWD,
+      clinicId: clinicId,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.samples.length).toEqual(1);
+  });
+});

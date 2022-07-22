@@ -30,23 +30,22 @@ const create = async (payload: Register) => {
     };
   }
 
-  const nuClinic = await Clinic.create({
+  let nuClinic = await Clinic.create({
     name: name, //clinic name
     address: address,
     postcode: postcode,
   });
+
   const defaultPassword = ranPassword();
   const hashedPassword = await hashPassword(defaultPassword);
-  // const nuUser = await User.create({
-  //   name: "", // For now empty
-  //   email: email,
-  //   password: hashedPassword,
-  //   ClinicId: nuClinic.id,,,
-  // });
   let nuUser = await nuClinic.createUser();
   nuUser.password = hashedPassword;
   nuUser.email = email;
   await nuUser.save();
+
+  // convert to plain JSON object
+  nuUser = nuUser.toJSON();
+  nuClinic = nuClinic.toJSON();
 
   await notifyUserRegDone({
     email: email,
@@ -59,13 +58,17 @@ const create = async (payload: Register) => {
     return {
       status: "OK",
       message: `Successfully registered. Email is sent to ${email}`,
-      result: { clinic: nuClinic, usrPassword: defaultPassword },
+      result: {
+        clinic: nuClinic,
+        usrPassword: defaultPassword,
+        userId: nuUser.id,
+      },
     };
   }
   return {
     status: "OK",
     message: `Successfully registered. Email is sent to ${email}`,
-    result: { clinic: nuClinic },
+    result: { clinic: nuClinic, userId: nuUser.id },
   };
 };
 export { create };

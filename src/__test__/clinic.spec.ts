@@ -120,6 +120,7 @@ describe("/register-clinic", () => {
     expect(res.body.result.clinic.name).toEqual(clinicName);
     expect(res.body.result.clinic.address).toEqual(clinicAddr);
     usrPassword = res.body.result.usrPassword;
+    expect(res.body.result.userId).toBeGreaterThan(0);
   });
 });
 

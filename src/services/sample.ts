@@ -1,6 +1,10 @@
 import { Clinic, Sample } from "../models/";
 import { parseStrToDate } from "../utils";
 
+export interface GetSamples {
+  clinicId: string;
+}
+
 export interface CreateSample {
   lastActiveStep: number;
   clinicId: number;
@@ -45,28 +49,18 @@ const create = async (payload: CreateSample) => {
     lastActiveStep: lastActiveStep,
     tagNo: tagNo,
     testType: testType,
-    pName: name, // patient name
-    pMobileNo: mobileNo,
-    pIdType: idType,
-    pSocId: socialId,
+    name: name, // patient name
+    mobileNo: mobileNo,
+    idType: idType,
+    socialId: socialId,
   });
+  // to remove sequelize decorators...
+  sample = sample.get({ plain: true });
 
   return {
     status: "OK",
     message: "Successfully created sample",
-    result: {
-      sample: {
-        id: sample.id,
-        lastActiveStep: sample.lastActiveStep,
-        clinicId: sample.ClinicId,
-        tagNo: sample.tagNo,
-        testType: sample.testType,
-        name: sample.pName,
-        mobileNo: sample.pMobileNo,
-        idType: sample.pIdType,
-        socialId: sample.pSocId,
-      },
-    },
+    result: { sample: { ...sample } },
   };
 };
 export { create };
@@ -99,32 +93,38 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
     };
   }
   sample.lastActiveStep = lastActiveStep;
-  sample.pName = name;
-  sample.pMobileNo = mobileNo;
-  sample.pIdType = idType;
-  sample.pSocId = socialId;
+  sample.name = name;
+  sample.mobileNo = mobileNo;
+  sample.idType = idType;
+  sample.socialId = socialId;
   sample.photoUri = Buffer.from(photoUri, "utf-8");
   sample.photoTakenAt = parseStrToDate(photoTakenAt);
   await sample.save();
+  // to remove sequelize decorators...
+  sample = sample.get({ plain: true });
 
   return {
     status: "OK",
     message: "Successfully update sample photo",
-    result: {
-      sample: {
-        photoUri: photoUri,
-        photoTakenAt: photoTakenAt,
-        id: sample.id,
-        lastActiveStep: sample.lastActiveStep,
-        clinicId: sample.ClinicId,
-        tagNo: sample.tagNo,
-        testType: sample.testType,
-        name: sample.pName,
-        mobileNo: sample.pMobileNo,
-        idType: sample.pIdType,
-        socialId: sample.pSocId,
-      },
-    },
+    result: { sample: { ...sample } },
   };
 };
 export { updatePhoto };
+
+const getSamples = async (payload: GetSamples) => {
+  const { clinicId } = payload;
+  let samples = await Sample.findAll({
+    where: {
+      ClinicId: clinicId,
+    },
+  });
+  samples = samples.map((el) => el.get({ plain: true }));
+
+  return {
+    status: "OK",
+    result: {
+      samples: samples,
+    },
+  };
+};
+export { getSamples };

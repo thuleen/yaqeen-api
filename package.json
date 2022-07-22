@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "start": "NODE_ENV=production node dist/src/app.js",
     "dev": "NODE_ENV=dev ts-node-dev --respawn src/app.ts",
-    "test": "NODE_ENV=test jest --testTimeout=5000"
+    "test": "NODE_ENV=test jest --testTimeout=5000 --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

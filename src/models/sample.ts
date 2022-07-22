@@ -17,10 +17,10 @@ class Sample extends Model {
   declare id: CreationOptional<number>;
   declare testType: CreationOptional<string>;
   declare tagNo: CreationOptional<string>;
-  declare pName: CreationOptional<string>;
-  declare pMobileNo: CreationOptional<string>;
-  declare pIdType: CreationOptional<string>;
-  declare pSocId: CreationOptional<string>;
+  declare name: CreationOptional<string>; // patient name
+  declare mobileNo: CreationOptional<string>;
+  declare idType: CreationOptional<string>;
+  declare socialId: CreationOptional<string>;
   declare photoUri: CreationOptional<Buffer>;
   declare pending: CreationOptional<boolean>;
   declare lastActiveStep: CreationOptional<number>;
@@ -49,19 +49,19 @@ Sample.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    pName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    pMobileNo: {
+    mobileNo: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    pIdType: {
+    idType: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    pSocId: {
+    socialId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
