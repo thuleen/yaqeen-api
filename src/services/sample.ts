@@ -130,11 +130,12 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
   await sample.save();
   // to remove sequelize decorators...
   sample = sample.get({ plain: true });
+  const strPhotoUri = sample?.photoUri.toString(); // convert Buffer to string
 
   return {
     status: "OK",
     message: "Successfully update sample photo",
-    result: { sample: { ...sample } },
+    result: { sample: { ...sample, photoUri: strPhotoUri } },
   };
 };
 export { updatePhoto };
