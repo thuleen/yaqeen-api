@@ -21,7 +21,7 @@ class ClinicValidator {
     ];
   }
 
-  validateForLogin() {
+  validateUser() {
     return [
       body("password")
         .notEmpty()

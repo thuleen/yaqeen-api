@@ -13,13 +13,26 @@ const register = async (req: Request, res: Response) => {
 };
 export { register };
 
-const login = async (req: Request, res: Response) => {
+const loginUsr = async (req: Request, res: Response) => {
   const { email, usrPassword } = req.body;
-  const result = await service.login({ email: email, password: usrPassword });
+  const result = await service.loginUsr({
+    email: email,
+    password: usrPassword,
+  });
   if (result.status === "Error") {
     res.status(OK).json(result); // status OK because we want to app to consume the message
     return;
   }
   res.status(OK).json(result);
 };
-export { login };
+export { loginUsr };
+
+const updateUsr = async (req: Request, res: Response) => {
+  const result = await service.updateUsr({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result); // status OK because we want to app to consume the message
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { updateUsr };

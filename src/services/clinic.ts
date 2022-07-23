@@ -73,7 +73,7 @@ const register = async (payload: Register) => {
 };
 export { register };
 
-const login = async (payload: Login) => {
+const loginUsr = async (payload: Login) => {
   const { email, password } = payload;
 
   const user = await User.findOne({
@@ -97,14 +97,59 @@ const login = async (payload: Login) => {
     };
   }
 
-  const clinic = await Clinic.findOne({
+  let clinic = await Clinic.findOne({
     where: { id: user.ClinicId },
   });
+  clinic = clinic?.get({ plain: true });
 
   return {
     status: "OK",
     message: `Successfully logged in`,
-    result: { clinic },
+    result: { clinic: clinic, user: user?.get({ plain: true }) },
   };
 };
-export { login };
+export { loginUsr };
+
+const updateUsr = async (payload: any) => {
+  const { email, usrPassword, name, usrNewPassword } = payload;
+  const user = await User.findOne({
+    where: {
+      email: email,
+    },
+  });
+  if (!user) {
+    return {
+      status: "Error",
+      message: `Could not find user with the email`,
+    };
+  }
+  if (name) {
+    user.name = name;
+    await user.save();
+  }
+  const hashedPassword = user.password;
+  if (usrNewPassword && !isPasswordMatch(usrPassword, hashedPassword)) {
+    return {
+      status: "Error",
+      message: `Incorrect password`,
+    };
+  }
+  if (usrNewPassword && isPasswordMatch(usrPassword, hashedPassword)) {
+    const newHashedPassword = await hashPassword(usrNewPassword);
+    user.password = newHashedPassword;
+    await user.save();
+  }
+  const minInfoUser = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  };
+  return {
+    status: "OK",
+    message: `Successfully update user info${
+      usrNewPassword ? " and password" : ""
+    }`,
+    result: { user: minInfoUser },
+  };
+};
+export { updateUsr };

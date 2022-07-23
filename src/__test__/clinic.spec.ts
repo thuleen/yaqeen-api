@@ -159,5 +159,49 @@ describe("/login-clinic-user", () => {
     expect(res.body.result.clinic.name).toEqual(clinicName);
     expect(res.body.result.clinic.address).toEqual(clinicAddr);
     expect(res.body.result.clinic.postcode).toEqual(clinicPostcode);
+    expect(res.body.result.user.id).toBeGreaterThan(0);
+    expect(res.body.result.user.email).toEqual(email);
+  });
+});
+
+describe("/update-clinic-user", () => {
+  test("return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/update-clinic-user`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("return OK when update user name", async () => {
+    const res = await request(app).post(`/update-clinic-user`).send({
+      password: FRONTEND_PWD,
+      name: "Alberto Ensteino bin Haji Mambo",
+      email: email,
+      usrPassword: usrPassword,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.user.name).toEqual(
+      "Alberto Ensteino bin Haji Mambo"
+    );
+  });
+
+  test("return OK when update user password", async () => {
+    const res = await request(app).post(`/update-clinic-user`).send({
+      password: FRONTEND_PWD,
+      email: email,
+      usrPassword: usrPassword,
+      usrNewPassword: "NewPassword123$",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual(
+      "Successfully update user info and password"
+    );
+
+    // try login with the new password
+    const resLogin = await request(app).post(`/login-clinic-user`).send({
+      password: FRONTEND_PWD,
+      email: email,
+      usrPassword: "NewPassword123$",
+    });
+
+    expect(resLogin.status).toEqual(OK);
+    expect(resLogin.body.message).toEqual("Successfully logged in");
   });
 });
