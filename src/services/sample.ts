@@ -147,12 +147,20 @@ const getSamples = async (payload: GetSamples) => {
       ClinicId: clinicId,
     },
   });
+  let resultSamples = [];
   samples = samples.map((el) => el.get({ plain: true }));
+  var len = samples.length;
+  while (len--) {
+    resultSamples.push({
+      ...samples[len],
+      photoUri: samples[len].photoUri?.toString(),
+    });
+  }
 
   return {
     status: "OK",
     result: {
-      samples: samples,
+      samples: resultSamples,
     },
   };
 };
