@@ -21,7 +21,7 @@ router.post(
   Controller.loginUsr
 );
 
-router.post(
+router.put(
   "/update-clinic-user",
   Validator.validateUser(),
   Middleware.handleValidationError,

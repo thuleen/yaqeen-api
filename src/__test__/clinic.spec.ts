@@ -166,11 +166,11 @@ describe("/login-clinic-user", () => {
 
 describe("/update-clinic-user", () => {
   test("return UNAUTHORIZED when no params", async () => {
-    const res = await request(app).post(`/update-clinic-user`);
+    const res = await request(app).put(`/update-clinic-user`);
     expect(res.status).toEqual(UNAUTHORIZED);
   });
   test("return OK when update user name", async () => {
-    const res = await request(app).post(`/update-clinic-user`).send({
+    const res = await request(app).put(`/update-clinic-user`).send({
       password: FRONTEND_PWD,
       name: "Alberto Ensteino bin Haji Mambo",
       email: email,
@@ -183,7 +183,7 @@ describe("/update-clinic-user", () => {
   });
 
   test("return OK when update user password", async () => {
-    const res = await request(app).post(`/update-clinic-user`).send({
+    const res = await request(app).put(`/update-clinic-user`).send({
       password: FRONTEND_PWD,
       email: email,
       usrPassword: usrPassword,

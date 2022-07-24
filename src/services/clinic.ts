@@ -102,10 +102,16 @@ const loginUsr = async (payload: Login) => {
   });
   clinic = clinic?.get({ plain: true });
 
+  const minInfoUser = { // dont' want to send password data accross the line!
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  };
+
   return {
     status: "OK",
     message: `Successfully logged in`,
-    result: { clinic: clinic, user: user?.get({ plain: true }) },
+    result: { clinic: clinic, user: minInfoUser}  
   };
 };
 export { loginUsr };
