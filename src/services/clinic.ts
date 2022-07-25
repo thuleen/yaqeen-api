@@ -102,7 +102,8 @@ const loginUsr = async (payload: Login) => {
   });
   clinic = clinic?.get({ plain: true });
 
-  const minInfoUser = { // dont' want to send password data accross the line!
+  const minInfoUser = {
+    // dont' want to send password data accross the line!
     id: user.id,
     name: user.name,
     email: user.email,
@@ -111,7 +112,7 @@ const loginUsr = async (payload: Login) => {
   return {
     status: "OK",
     message: `Successfully logged in`,
-    result: { clinic: clinic, user: minInfoUser}  
+    result: { clinic: clinic, user: minInfoUser },
   };
 };
 export { loginUsr };
@@ -133,17 +134,19 @@ const updateUsr = async (payload: any) => {
     user.name = name;
     await user.save();
   }
-  const hashedPassword = user.password;
-  if (usrNewPassword && !isPasswordMatch(usrPassword, hashedPassword)) {
-    return {
-      status: "Error",
-      message: `Incorrect password`,
-    };
-  }
-  if (usrNewPassword && isPasswordMatch(usrPassword, hashedPassword)) {
-    const newHashedPassword = await hashPassword(usrNewPassword);
-    user.password = newHashedPassword;
-    await user.save();
+  if (usrPassword) {
+    const hashedPassword = user.password;
+    if (usrNewPassword && !isPasswordMatch(usrPassword, hashedPassword)) {
+      return {
+        status: "Error",
+        message: `Incorrect password`,
+      };
+    }
+    if (usrNewPassword && isPasswordMatch(usrPassword, hashedPassword)) {
+      const newHashedPassword = await hashPassword(usrNewPassword);
+      user.password = newHashedPassword;
+      await user.save();
+    }
   }
   const minInfoUser = {
     id: user.id,

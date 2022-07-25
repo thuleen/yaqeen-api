@@ -1,5 +1,6 @@
 import { format, parseISO } from "date-fns";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 // generate random 7 digits
 const ranVerificationCode = () => {
@@ -18,14 +19,14 @@ const parseStrToDate = (date: string) => {
 export { parseStrToDate };
 
 const ranPassword = () => {
-  var chars =
+  var wishlist =
     "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  var passwordLength = 8;
+  var length = 8;
   var password = "";
-  for (var i = 0; i <= passwordLength; i++) {
-    var randomNumber = Math.floor(Math.random() * chars.length);
-    password += chars.substring(randomNumber, randomNumber + 1);
-  }
+  password = Array.from(crypto.randomFillSync(new Uint32Array(length)))
+    .map((x) => wishlist[x % wishlist.length])
+    .join("");
+
   return password;
 };
 export { ranPassword };

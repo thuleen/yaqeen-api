@@ -33,6 +33,16 @@ const updatePhoto = async (req: Request, res: Response) => {
 };
 export { updatePhoto };
 
+const updateResult = async (req: Request, res: Response) => {
+  const result = await service.updateResult({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result);
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { updateResult };
+
 const getSamples = async (req: Request, res: Response) => {
   const result = await service.getSamples({ ...req.body });
   if (result.status === "Error") {

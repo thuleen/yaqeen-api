@@ -136,14 +136,14 @@ describe("/update-patient", () => {
   });
 });
 
-describe("/update-sample-photo", () => {
+describe("/update-photo", () => {
   const SAVE_PHOTO_STEP = 2;
   test("should return UNAUTHORIZED when no params", async () => {
-    const res = await request(app).put(`/update-sample-photo`);
+    const res = await request(app).put(`/update-photo`);
     expect(res.status).toEqual(UNAUTHORIZED);
   });
   test("should return OK but could not fiind a sample record", async () => {
-    const res = await request(app).put(`/update-sample-photo`).send({
+    const res = await request(app).put(`/update-photo`).send({
       password: FRONTEND_PWD,
       id: 0, // <<-- non existent sample record id
       lastActiveStep: SAVE_PHOTO_STEP,
@@ -162,7 +162,7 @@ describe("/update-sample-photo", () => {
     expect(res.body.result).toBeUndefined();
   });
   test("should return OK", async () => {
-    const res = await request(app).put(`/update-sample-photo`).send({
+    const res = await request(app).put(`/update-photo`).send({
       password: FRONTEND_PWD,
       id: sampleId,
       lastActiveStep: SAVE_PHOTO_STEP,
@@ -179,6 +179,28 @@ describe("/update-sample-photo", () => {
     expect(res.status).toEqual(OK);
     expect(res.body.message).toEqual("Successfully update sample photo");
     expect(res.body.result.sample.lastActiveStep).toEqual(SAVE_PHOTO_STEP);
+  });
+});
+
+describe("/update-result", () => {
+  const FINAL_STEP = 3;
+  const result =
+    "c=true/igM=true/igG=false/cC=true/ns1Ag=true/Acute dengue infection, repeated dengue infection";
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).put(`/update-result`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return OK", async () => {
+    const res = await request(app).put(`/update-result`).send({
+      password: FRONTEND_PWD,
+      id: sampleId,
+      lastActiveStep: FINAL_STEP,
+      clinicId: clinicId,
+      result: result,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.message).toEqual("Successfully update sample");
+    expect(res.body.result.sample.result).toEqual(result);
   });
 });
 

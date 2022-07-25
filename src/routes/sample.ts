@@ -22,11 +22,19 @@ router.put(
 );
 
 router.put(
-  "/update-sample-photo",
+  "/update-photo",
   Validator.validateForUpdatingPhoto(),
   Middleware.handleValidationError,
   Middleware.isAuthorize,
   Controller.updatePhoto
+);
+
+router.put(
+  "/update-result",
+  Validator.validateForUpdateResult(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.updateResult
 );
 
 router.post(

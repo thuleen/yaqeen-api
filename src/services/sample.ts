@@ -140,6 +140,28 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
 };
 export { updatePhoto };
 
+const updateResult = async (payload: any) => {
+  let sample = await Sample.findOne({
+    where: { id: payload.id },
+  });
+  if (!sample) {
+    return {
+      status: "Error",
+      message: "Could not update because could not find the sample",
+      result: { sample: null },
+    };
+  }
+  sample.result = payload.result;
+  await sample.save();
+  sample = sample.get({ plain: true }); // return plain object when returns to client
+  return {
+    status: "OK",
+    message: "Successfully update sample",
+    result: { sample: sample },
+  };
+};
+export { updateResult };
+
 const getSamples = async (payload: GetSamples) => {
   const { clinicId } = payload;
   let samples = await Sample.findAll({

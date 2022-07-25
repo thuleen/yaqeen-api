@@ -26,6 +26,7 @@ class Sample extends Model {
   declare lastActiveStep: CreationOptional<number>;
   declare interpretAt: CreationOptional<Date>;
   declare photoTakenAt: CreationOptional<Date>;
+  declare result: CreationOptional<string>;
 
   declare ClinicId: ForeignKey<Clinic["id"]>;
   // createdAt can be undefined during creation
@@ -83,6 +84,10 @@ Sample.init(
     },
     photoTakenAt: {
       type: DataTypes.DATE,
+      allowNull: true,
+    },
+    result: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     createdAt: DataTypes.DATE,

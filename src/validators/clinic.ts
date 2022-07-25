@@ -27,7 +27,7 @@ class ClinicValidator {
         .notEmpty()
         .withMessage("client app password should not be empty"),
       body("email").notEmpty().withMessage("user email should not be empty"),
-      body("usrPassword").notEmpty().withMessage("c should not be empty"),
+      // body("usrPassword").notEmpty().withMessage("c should not be empty"),
     ];
   }
 }
