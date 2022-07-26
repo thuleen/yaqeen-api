@@ -35,6 +35,7 @@ const email = "tipahtertipu@clinicmedivron.com.my";
 let usrPassword = "";
 
 let sampleId: number;
+let sampleToBeDeletedId: number;
 const tagNo = "123";
 const testType = "Dengue/NS1Ag";
 const patientName = "Najibozo Setan Bengap";
@@ -110,6 +111,15 @@ describe("/create-sample", () => {
     expect(res.status).toEqual(OK);
     expect(res.body.result.sample.tagNo).toEqual(tagNo);
     expect(res.body.result.sample.lastActiveStep).toEqual(CREATE_SAMPLE_STEP);
+
+    const resDel = await request(app).post(`/create-sample`).send({
+      password: FRONTEND_PWD,
+      lastActiveStep: CREATE_SAMPLE_STEP,
+      clinicId: clinicId,
+      tagNo: "69",
+      testType: testType,
+    });
+    sampleToBeDeletedId = resDel.body.result.sample.id;
   });
 });
 
@@ -221,6 +231,22 @@ describe("/samples", () => {
     const res = await request(app).post(`/samples`).send({
       password: FRONTEND_PWD,
       clinicId: clinicId,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.samples.length).toEqual(2); // includes a samples to be deleted
+  });
+});
+
+describe("/delete a sample", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).delete(`/sample`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return OK", async () => {
+    const res = await request(app).delete(`/sample`).send({
+      password: FRONTEND_PWD,
+      clinicId: clinicId,
+      id: sampleToBeDeletedId,
     });
     expect(res.status).toEqual(OK);
     expect(res.body.result.samples.length).toEqual(1);

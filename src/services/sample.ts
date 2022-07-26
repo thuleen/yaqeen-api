@@ -60,6 +60,34 @@ const create = async (payload: CreateSample) => {
 };
 export { create };
 
+const deleteSample = async (payload: { id: string; clinicId: string }) => {
+  await Sample.destroy({
+    where: {
+      id: payload.id,
+      ClinicId: payload.clinicId,
+    },
+  });
+  let samples = await Sample.findAll({
+    where: { ClinicId: payload.clinicId },
+  });
+  samples = samples.map((el) => el.get({ plain: true }));
+  let resultSamples = [];
+  var len = samples.length;
+  while (len--) {
+    resultSamples.push({
+      ...samples[len],
+      photoUri: samples[len].photoUri?.toString(),
+    });
+  }
+
+  return {
+    status: "OK",
+    message: "Successfully delete a sample",
+    result: { samples: resultSamples },
+  };
+};
+export { deleteSample };
+
 const updatePatient = async (payload: UpdateSamplePatient) => {
   const { id, lastActiveStep, clinicId, name, mobileNo, idType, socialId } =
     payload;

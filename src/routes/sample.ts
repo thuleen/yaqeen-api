@@ -37,6 +37,14 @@ router.put(
   Controller.updateResult
 );
 
+router.delete(
+  "/sample",
+  Validator.validateForDelete(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.deleteSample
+);
+
 router.post(
   "/samples",
   Validator.validateForGetSamples(),

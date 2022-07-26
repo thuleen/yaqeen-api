@@ -80,6 +80,16 @@ class Validator {
       body("result").notEmpty().withMessage("result should not be empty"),
     ];
   }
+
+  validateForDelete() {
+    return [
+      body("password")
+        .notEmpty()
+        .withMessage("client app password should not be empty"),
+      body("id").notEmpty().withMessage("sample id should not be empty"),
+      body("clinicId").notEmpty().withMessage("clinicId should not be empty"),
+    ];
+  }
 }
 
 export default new Validator();

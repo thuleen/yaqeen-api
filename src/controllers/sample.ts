@@ -43,6 +43,16 @@ const updateResult = async (req: Request, res: Response) => {
 };
 export { updateResult };
 
+const deleteSample = async (req: Request, res: Response) => {
+  const result = await service.deleteSample({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result);
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { deleteSample };
+
 const getSamples = async (req: Request, res: Response) => {
   const result = await service.getSamples({ ...req.body });
   if (result.status === "Error") {
