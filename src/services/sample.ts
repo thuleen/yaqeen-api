@@ -65,6 +65,7 @@ const deleteSample = async (payload: { id: string; clinicId: string }) => {
     where: {
       id: payload.id,
       ClinicId: payload.clinicId,
+      pending: true
     },
   });
   let samples = await Sample.findAll({
