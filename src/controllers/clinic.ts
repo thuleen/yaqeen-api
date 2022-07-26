@@ -36,3 +36,33 @@ const updateUsr = async (req: Request, res: Response) => {
   res.status(OK).json(result);
 };
 export { updateUsr };
+
+const updateClinicNme = async (req: Request, res: Response) => {
+  const result = await service.updateClinicNme({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result); // status OK because we want to app to consume the message
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { updateClinicNme };
+
+const updateClinicAddr = async (req: Request, res: Response) => {
+  const result = await service.updateClinicAddr({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result); // status OK because we want to app to consume the message
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { updateClinicAddr };
+
+const updateClinicPostcode = async (req: Request, res: Response) => {
+  const result = await service.updateClinicPostcode({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result); // status OK because we want to app to consume the message
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { updateClinicPostcode };

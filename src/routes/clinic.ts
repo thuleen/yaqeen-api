@@ -29,4 +29,28 @@ router.put(
   Controller.updateUsr
 );
 
+router.put(
+  "/update-clinic-name",
+  Validator.validateClinicName(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.updateClinicNme
+);
+
+router.put(
+  "/update-clinic-address",
+  Validator.validateClinicAddr(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.updateClinicAddr
+);
+
+router.put(
+  "/update-clinic-postcode",
+  Validator.validateClinicPostcode(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.updateClinicPostcode
+);
+
 export default router;

@@ -24,7 +24,6 @@ class Sample extends Model {
   declare photoUri: CreationOptional<Buffer>;
   declare pending: CreationOptional<boolean>;
   declare lastActiveStep: CreationOptional<number>;
-  declare interpretAt: CreationOptional<Date>;
   declare photoTakenAt: CreationOptional<Date>;
   declare result: CreationOptional<string>;
 
@@ -77,10 +76,6 @@ Sample.init(
     lastActiveStep: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
-    },
-    interpretAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
     },
     photoTakenAt: {
       type: DataTypes.DATE,

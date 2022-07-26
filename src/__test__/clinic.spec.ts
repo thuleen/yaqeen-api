@@ -34,6 +34,7 @@ const email = "tipahtertipu@clinicmedivron.com.my";
 let usrPassword = "";
 
 let app: Express;
+let clinicId: number;
 
 beforeAll(async () => {
   try {
@@ -103,7 +104,6 @@ describe("/register-clinic", () => {
       "Could not register because email is not unique"
     );
   });
-
   test("should return OK when ", async () => {
     const res = await request(app).post(`/register-clinic`).send({
       password: FRONTEND_PWD,
@@ -120,6 +120,7 @@ describe("/register-clinic", () => {
     expect(res.body.result.clinic.name).toEqual(clinicName);
     expect(res.body.result.clinic.address).toEqual(clinicAddr);
     usrPassword = res.body.result.usrPassword;
+    clinicId = res.body.result.clinic.id;
     expect(res.body.result.userId).toBeGreaterThan(0);
   });
 });
@@ -181,7 +182,6 @@ describe("/update-clinic-user", () => {
       "Alberto Ensteino bin Haji Mambo"
     );
   });
-
   test("return OK when update user password", async () => {
     const res = await request(app).put(`/update-clinic-user`).send({
       password: FRONTEND_PWD,
@@ -193,15 +193,91 @@ describe("/update-clinic-user", () => {
     expect(res.body.message).toEqual(
       "Successfully update user info and password"
     );
-
     // try login with the new password
     const resLogin = await request(app).post(`/login-clinic-user`).send({
       password: FRONTEND_PWD,
       email: email,
       usrPassword: "NewPassword123$",
     });
-
     expect(resLogin.status).toEqual(OK);
     expect(resLogin.body.message).toEqual("Successfully logged in");
+  });
+});
+
+describe("/update-clinic-name", () => {
+  test("return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).put(`/update-clinic-name`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("return OK but return clinic is null when name is an empty string", async () => {
+    const res = await request(app).put(`/update-clinic-name`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      name: " ", // clinic user try to be funny!
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic).toBeNull();
+  });
+  test("return OK", async () => {
+    const res = await request(app).put(`/update-clinic-name`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      name: "Klinik Zahid Komedi",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic.name).toEqual("Klinik Zahid Komedi");
+  });
+});
+
+describe("/update-clinic-address", () => {
+  test("return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).put(`/update-clinic-address`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("return OK but return clinic is null when address is an empty string", async () => {
+    const res = await request(app).put(`/update-clinic-address`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      address: " ", // clinic user try to be funny!
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic).toBeNull();
+  });
+  test("return OK", async () => {
+    const res = await request(app).put(`/update-clinic-address`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      address:
+        "No. 123, Jalan 10/1B, Lengkok Otot Kuat, Taman Kesihatan, Bandar Baru Bangang, Kejora, Johor",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic.address).toEqual(
+      "No. 123, Jalan 10/1B, Lengkok Otot Kuat, Taman Kesihatan, Bandar Baru Bangang, Kejora, Johor"
+    );
+  });
+});
+
+describe("/update-clinic-postcode", () => {
+  test("return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).put(`/update-clinic-postcode`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("return OK but return clinic is null when postcode is an empty string", async () => {
+    const res = await request(app).put(`/update-clinic-postcode`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      postcode: " ", // clinic user try to be funny!
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic).toBeNull();
+  });
+  test("return OK", async () => {
+    const res = await request(app).put(`/update-clinic-postcode`).send({
+      password: FRONTEND_PWD,
+      id: clinicId,
+      postcode: "666999",
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.clinic.postcode).toEqual("666999");
   });
 });

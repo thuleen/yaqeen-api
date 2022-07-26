@@ -162,3 +162,87 @@ const updateUsr = async (payload: any) => {
   };
 };
 export { updateUsr };
+
+const updateClinicNme = async (payload: any) => {
+  let clinic = await Clinic.findOne({
+    where: { id: payload.id },
+  });
+  if (!clinic) {
+    return {
+      status: "Error",
+      message: `Could not update clinic name because could not find clinic`,
+      result: { clinic: null },
+    };
+  }
+  if (!payload.name || payload.name.trim().length === 0) {
+    return {
+      status: "Error",
+      message: `Could not update clinic name because name is an empty string`,
+      result: { clinic: null },
+    };
+  }
+  clinic.name = payload.name;
+  await clinic.save();
+  return {
+    status: "OK",
+    message: `Successfully update clinic name`,
+    result: { clinic: clinic.get({ plain: true }) },
+  };
+};
+export { updateClinicNme };
+
+const updateClinicAddr = async (payload: any) => {
+  let clinic = await Clinic.findOne({
+    where: { id: payload.id },
+  });
+  if (!clinic) {
+    return {
+      status: "Error",
+      message: `Could not update clinic address because could not find clinic`,
+      result: { clinic: null },
+    };
+  }
+  if (!payload.address || payload.address.trim().length === 0) {
+    return {
+      status: "Error",
+      message: `Could not update clinic address because name is an empty string`,
+      result: { clinic: null },
+    };
+  }
+  clinic.address = payload.address;
+  await clinic.save();
+  return {
+    status: "OK",
+    message: `Successfully update clinic address`,
+    result: { clinic: clinic.get({ plain: true }) },
+  };
+};
+export { updateClinicAddr };
+
+const updateClinicPostcode = async (payload: any) => {
+  let clinic = await Clinic.findOne({
+    where: { id: payload.id },
+  });
+  if (!clinic) {
+    return {
+      status: "Error",
+      message: `Could not update clinic postcode because could not find clinic`,
+      result: { clinic: null },
+    };
+  }
+  if (!payload.postcode || payload.postcode.trim().length === 0) {
+    return {
+      status: "Error",
+      message: `Could not update clinic postcode because postcode is an empty string`,
+      result: { clinic: null },
+    };
+  }
+  clinic.postcode = payload.postcode;
+  await clinic.save();
+  return {
+    status: "OK",
+    message: `Successfully update clinic postcode`,
+    result: { clinic: clinic.get({ plain: true }) },
+  };
+};
+export { updateClinicPostcode };

@@ -151,6 +151,9 @@ const updateResult = async (payload: any) => {
       result: { sample: null },
     };
   }
+
+  sample.pending = payload.pending;
+  sample.lastActiveStep = payload.lastActiveStep;
   sample.result = payload.result;
   await sample.save();
   sample = sample.get({ plain: true }); // return plain object when returns to client
