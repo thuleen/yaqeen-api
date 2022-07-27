@@ -5,6 +5,11 @@ export interface GetSamples {
   clinicId: string;
 }
 
+export interface GetPatientSamples {
+  idType: string;
+  socialId: string;
+}
+
 export interface CreateSample {
   lastActiveStep: number;
   clinicId: number;
@@ -36,14 +41,12 @@ const create = async (payload: CreateSample) => {
   const clinic = await Clinic.findOne({
     where: { id: clinicId },
   });
-
   if (!clinic) {
     return {
       status: "Error",
       message: "Could not find clinic record based on clinic id",
     };
   }
-
   let sample = await clinic.createSample({
     lastActiveStep: lastActiveStep,
     tagNo: tagNo,
@@ -51,7 +54,6 @@ const create = async (payload: CreateSample) => {
   });
   // to remove sequelize decorators...
   sample = sample.get({ plain: true });
-
   return {
     status: "OK",
     message: "Successfully created sample",
@@ -65,7 +67,7 @@ const deleteSample = async (payload: { id: string; clinicId: string }) => {
     where: {
       id: payload.id,
       ClinicId: payload.clinicId,
-      pending: true
+      pending: true,
     },
   });
   let samples = await Sample.findAll({
@@ -80,7 +82,6 @@ const deleteSample = async (payload: { id: string; clinicId: string }) => {
       photoUri: samples[len].photoUri?.toString(),
     });
   }
-
   return {
     status: "OK",
     message: "Successfully delete a sample",
@@ -160,7 +161,6 @@ const updatePhoto = async (payload: UpdateSamplePhoto) => {
   // to remove sequelize decorators...
   sample = sample.get({ plain: true });
   const strPhotoUri = sample?.photoUri.toString(); // convert Buffer to string
-
   return {
     status: "OK",
     message: "Successfully update sample photo",
@@ -180,7 +180,6 @@ const updateResult = async (payload: any) => {
       result: { sample: null },
     };
   }
-
   sample.pending = payload.pending;
   sample.lastActiveStep = payload.lastActiveStep;
   sample.result = payload.result;
@@ -210,7 +209,6 @@ const getSamples = async (payload: GetSamples) => {
       photoUri: samples[len].photoUri?.toString(),
     });
   }
-
   return {
     status: "OK",
     result: {
@@ -219,3 +217,37 @@ const getSamples = async (payload: GetSamples) => {
   };
 };
 export { getSamples };
+
+const getPatientSamples = async (payload: GetPatientSamples) => {
+  const { idType, socialId } = payload;
+  let samples = await Sample.findAll({
+    where: {
+      idType: idType,
+      socialId: socialId,
+    },
+  });
+  samples = samples.map((el) => el.get({ plain: true }));
+  if (!samples || samples.length === 0) {
+    return {
+      status: "Error",
+      result: {
+        samples: null,
+      },
+    };
+  }
+  var len = samples.length;
+  let resultSamples = [];
+  while (len--) {
+    resultSamples.push({
+      ...samples[len],
+      photoUri: samples[len].photoUri?.toString(),
+    });
+  }
+  return {
+    status: "OK",
+    result: {
+      samples: resultSamples,
+    },
+  };
+};
+export { getPatientSamples };

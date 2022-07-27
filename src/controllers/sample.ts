@@ -62,3 +62,14 @@ const getSamples = async (req: Request, res: Response) => {
   res.status(OK).json(result);
 };
 export { getSamples };
+
+// most called by Patient app
+const getPatientSamples = async (req: Request, res: Response) => {
+  const result = await service.getPatientSamples({ ...req.body });
+  if (result.status === "Error") {
+    res.status(OK).json(result);
+    return;
+  }
+  res.status(OK).json(result);
+};
+export { getPatientSamples };

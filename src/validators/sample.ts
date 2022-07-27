@@ -90,6 +90,16 @@ class Validator {
       body("clinicId").notEmpty().withMessage("clinicId should not be empty"),
     ];
   }
+
+  validateForGetPatientSamples() {
+    return [
+      body("password")
+        .notEmpty()
+        .withMessage("client app password should not be empty"),
+      body("idType").notEmpty().withMessage("idType should not be empty"),
+      body("socialId").notEmpty().withMessage("socialId should not be empty"),
+    ];
+  }
 }
 
 export default new Validator();

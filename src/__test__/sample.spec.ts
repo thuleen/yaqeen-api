@@ -40,8 +40,10 @@ const tagNo = "123";
 const testType = "Dengue/NS1Ag";
 const patientName = "Najibozo Setan Bengap";
 const patientMobileNo = "01344444444";
-const patienIdType = "Nric";
+const patientIdType = "Nric";
 const patientSocId = "512332235894574";
+const result =
+  "c=true/igM=true/igG=false/cC=true/ns1Ag=true/Acute dengue infection, repeated dengue infection";
 
 let app: Express;
 let clinic;
@@ -137,7 +139,7 @@ describe("/update-patient", () => {
       clinicId: clinicId,
       name: patientName,
       mobileNo: patientMobileNo,
-      idType: patienIdType,
+      idType: patientIdType,
       socialId: patientSocId,
     });
     expect(res.status).toEqual(OK);
@@ -162,7 +164,7 @@ describe("/update-photo", () => {
       testType: testType,
       name: patientName,
       mobileNo: patientMobileNo,
-      idType: patienIdType,
+      idType: patientIdType,
       socialId: patientSocId,
       photoUri: samplePhoto,
       photoTakenAt: "2022-07-22 08:07:47",
@@ -181,7 +183,7 @@ describe("/update-photo", () => {
       testType: testType,
       name: patientName,
       mobileNo: patientMobileNo,
-      idType: patienIdType,
+      idType: patientIdType,
       socialId: patientSocId,
       photoUri: samplePhoto,
       photoTakenAt: "2022-07-22 08:07:47",
@@ -194,8 +196,6 @@ describe("/update-photo", () => {
 
 describe("/update-result", () => {
   const FINAL_STEP = 3;
-  const result =
-    "c=true/igM=true/igG=false/cC=true/ns1Ag=true/Acute dengue infection, repeated dengue infection";
   test("should return UNAUTHORIZED when no params", async () => {
     const res = await request(app).put(`/update-result`);
     expect(res.status).toEqual(UNAUTHORIZED);
@@ -250,5 +250,30 @@ describe("/delete a sample", () => {
     });
     expect(res.status).toEqual(OK);
     expect(res.body.result.samples.length).toEqual(1);
+  });
+});
+
+describe("/get patient samples", () => {
+  test("should return UNAUTHORIZED when no params", async () => {
+    const res = await request(app).post(`/get-patient-samples`);
+    expect(res.status).toEqual(UNAUTHORIZED);
+  });
+  test("should return OK but status Error with incorrect idType", async () => {
+    const res = await request(app).post(`/get-patient-samples`).send({
+      password: FRONTEND_PWD,
+      idType: "Passport", // incorrect id type
+      socialId: patientSocId,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.samples).toBeNull();
+  });
+  test("should return OK", async () => {
+    const res = await request(app).post(`/get-patient-samples`).send({
+      password: FRONTEND_PWD,
+      idType: patientIdType,
+      socialId: patientSocId,
+    });
+    expect(res.status).toEqual(OK);
+    expect(res.body.result.samples.length).toBeGreaterThan(0);
   });
 });

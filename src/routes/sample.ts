@@ -46,6 +46,14 @@ router.delete(
 );
 
 router.post(
+  "/get-patient-samples",
+  Validator.validateForGetPatientSamples(),
+  Middleware.handleValidationError,
+  Middleware.isAuthorize,
+  Controller.getPatientSamples
+);
+
+router.post(
   "/samples",
   Validator.validateForGetSamples(),
   Middleware.handleValidationError,
