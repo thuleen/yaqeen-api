@@ -225,6 +225,7 @@ const getPatientSamples = async (payload: GetPatientSamples) => {
       idType: idType,
       socialId: socialId,
     },
+    include: [{ model: Clinic }],
   });
   samples = samples.map((el) => el.get({ plain: true }));
   if (!samples || samples.length === 0) {

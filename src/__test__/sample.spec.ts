@@ -273,7 +273,9 @@ describe("/get patient samples", () => {
       idType: patientIdType,
       socialId: patientSocId,
     });
+    let samples = res.body.result.samples;
     expect(res.status).toEqual(OK);
-    expect(res.body.result.samples.length).toBeGreaterThan(0);
+    expect(samples.length).toBeGreaterThan(0);
+    expect(samples[samples.length - 1].Clinic.id).toBeGreaterThan(0);
   });
 });
