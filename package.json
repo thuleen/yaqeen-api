@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "NODE_ENV=production node dist/src/app.js",
+    "start": "NODE_ENV=production node dist/app.js",
     "dev": "NODE_ENV=dev ts-node-dev --respawn src/app.ts",
     "test": "NODE_ENV=test jest --testTimeout=5000"
   },

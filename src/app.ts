@@ -14,8 +14,6 @@ const PORT = parseInt(`${process.env.PORT}`) || 8001;
 const isForProduction = process.env.NODE_ENV === "production" ? true : false;
 const corsOptions = {
   origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
     `${process.env.FRONTEND_CLINIC_URL}`,
     `${process.env.FRONTEND_PATIENT_URL}`,
   ],
