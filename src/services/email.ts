@@ -22,9 +22,10 @@ const getTransport = () => {
   let transporter = nodemailer.createTransport({
     host: SMTP,
     pool: true,
-    port: 2525,
+    // port: 2525,
     // secure: false, // true for 465, false for other ports
-    secure: true, // thuleen.io
+    port: 465, // thuleen
+    secure: true, // true for 465
     auth: {
       user: T_USER, // generated ethereal user
       pass: T_PASS, // generated ethereal password
