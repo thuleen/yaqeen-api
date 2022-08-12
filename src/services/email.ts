@@ -23,7 +23,8 @@ const getTransport = () => {
     host: SMTP,
     pool: true,
     port: 2525,
-    secure: false, // true for 465, false for other ports
+    // secure: false, // true for 465, false for other ports
+    secure: true, // thuleen.io
     auth: {
       user: T_USER, // generated ethereal user
       pass: T_PASS, // generated ethereal password
